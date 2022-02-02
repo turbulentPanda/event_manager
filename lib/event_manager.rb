@@ -22,11 +22,11 @@ def legislators_by_zipcode(zipcode)
 end
 
 def save_thank_you_letter(id, form_letter)
-  Dir.mkdir('poutut') unless Dir.exist?('output')
+  Dir.mkdir('output') unless Dir.exist?('output')
 
   filename = "output/thanks_#{id}.html"
 
-  File.open(filname, 'w') do |file|
+  File.open(filename, 'w') do |file|
     file.puts form_letter
   end
 end
