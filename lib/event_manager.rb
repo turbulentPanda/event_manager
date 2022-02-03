@@ -1,6 +1,7 @@
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
+require 'date'
 
 def clean_zipcode(zipcode)
   zipcode.to_s.rjust(5, '0')[0..4]
@@ -15,6 +16,14 @@ def clean_phone_number(phone_number)
   else
     nil
   end
+end
+
+def create_datetime(date_time)
+  DateTime.strptime(date_time, '%m/%d/%y %k:%M')
+end
+
+def most_frequent_array_element(array)
+  array.max_by { |element| array.count(element) }
 end
 
 def legislators_by_zipcode(zipcode)
@@ -55,6 +64,9 @@ contents = CSV.open(
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
+
+hours = []
+days = []
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
@@ -67,8 +79,20 @@ contents.each do |row|
 
   puts "#{name} #{zipcode} #{phone_number}"
 
-  # form_letter = erb_template.result(binding)
+  hour = create_datetime(row[:regdate]).hour
+  hours << hour
 
-  # save_thank_you_letter(id, form_letter)
+  day = create_datetime(row[:regdate]).wday
+  days << day
+
+  form_letter = erb_template.result(binding)
+
+  save_thank_you_letter(id, form_letter)
 
 end
+
+puts "The busiest hour(s) for registration was: #{most_frequent_array_element(hours)}"
+
+day_correlation = {}
+
+puts "The busiest day(s) for registration was: #{Date::DAYNAMES[most_frequent_array_element(days)]}"
