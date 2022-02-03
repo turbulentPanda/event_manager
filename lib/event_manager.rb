@@ -93,6 +93,4 @@ end
 
 puts "The busiest hour(s) for registration was: #{most_frequent_array_element(hours)}"
 
-day_correlation = {}
-
 puts "The busiest day(s) for registration was: #{Date::DAYNAMES[most_frequent_array_element(days)]}"
